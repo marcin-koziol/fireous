@@ -1,0 +1,20 @@
+# build output
+build/
+build-*/
+build-tests/
+cmake-build-*/
+
+# editor/IDE cruft
+.vscode/
+.idea/
+.claude/
+*.swp
+*~
+
+# Python
+__pycache__/
+*.pyc
+
+# OS cruft
+.DS_Store
+Thumbs.db

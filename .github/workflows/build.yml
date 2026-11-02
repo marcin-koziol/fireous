@@ -1,0 +1,71 @@
+name: build
+
+# Builds FIReous VST3/LV2/CLAP/JACK for Linux, Windows and macOS, and runs
+# the standalone DSP tests on Linux.
+
+on:
+  push:
+    branches: ['*']
+    tags: ['v*']
+  pull_request:
+    branches: ['*']
+
+permissions:
+  contents: write
+
+env:
+  NAME: fireous
+
+jobs:
+  linux:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: distrho/dpf-cmake-action@v1
+        with:
+          target: linux-x86_64
+          dpf_path: dpf
+          pawpaw: true
+
+  windows:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: distrho/dpf-cmake-action@v1
+        with:
+          target: win64
+          dpf_path: dpf
+          pawpaw: true
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: distrho/dpf-cmake-action@v1
+        with:
+          target: macos-universal
+          dpf_path: dpf
+          pawpaw: true
+
+  linux-tests:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure tests
+        run: cmake -S tests -B build-tests -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build tests
+        run: cmake --build build-tests -j"$(nproc)"
+
+      - name: Run tests
+        run: ctest --test-dir build-tests --output-on-failure
