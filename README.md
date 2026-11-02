@@ -57,7 +57,7 @@ Implemented:
 - IIR graphic EQ, PEQ with HP/LP, delay with per-channel align,
   compressor (peak/RMS, link, auto-makeup, sidechain key), limiter
   (lookahead, sample/true-peak estimate), chain reorder, bypass,
-  input/output trim, meters.
+  input/output trim, Delta monitor, meters.
 - LINEAR phase FIR design for the EQ/PEQ block (combined when adjacent),
   with reported latency.
 - Sidechain input bus (stereo).

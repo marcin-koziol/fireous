@@ -12,6 +12,25 @@ using namespace test;
 
 static void set(Engine& e, uint32_t p, float v) { e.setParameterValue(p, v); }
 
+
+static void testBiquads()
+{
+    Biquad lp, hp, ls, hs;
+    lp.setLowpass(48000.0, 1000.0f, 0.7071f);
+    hp.setHighpass(48000.0, 1000.0f, 0.7071f);
+    ls.setLowShelf(48000.0, 100.0f, 6.0f, 0.7071f);
+    hs.setHighShelf(48000.0, 10000.0f, 6.0f, 0.7071f);
+
+    CHECK_NEAR(lp.magnitudeAt(48000.0, 100.0), 1.0f, 0.05f);
+    CHECK(lp.magnitudeAt(48000.0, 10000.0) < 0.05f);
+    CHECK(hp.magnitudeAt(48000.0, 100.0) < 0.05f);
+    CHECK_NEAR(hp.magnitudeAt(48000.0, 10000.0), 1.0f, 0.05f);
+    CHECK_NEAR(ls.magnitudeAt(48000.0, 20.0), 2.0f, 0.15f);
+    CHECK_NEAR(ls.magnitudeAt(48000.0, 10000.0), 1.0f, 0.05f);
+    CHECK_NEAR(hs.magnitudeAt(48000.0, 20000.0), 2.0f, 0.20f);
+    CHECK_NEAR(hs.magnitudeAt(48000.0, 100.0), 1.0f, 0.05f);
+}
+
 static void testIirFlat()
 {
     Engine e;
@@ -286,6 +305,7 @@ static void testFirSanity()
 
 int main()
 {
+    testBiquads();
     testIirFlat();
     testLinearLatencyAndIdentity();
     testPeqGainIirAndLinear();

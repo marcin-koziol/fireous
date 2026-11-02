@@ -569,18 +569,16 @@ fireous/
 24. **Sukces:** workflow, latency, stabilność.
 25. **Brak referencyjnego tracku/sesji.**
 26. **v0.1.0 = to, co już wiemy; reszta do v0.2+.**
+27. **Limiter:** wbudowany z `lookahead 0/1/2 ms` + `true peak on/off`,
+    domyślnie 0 ms + sample peak; FabFilter Pro-L można użyć po nim.
+28. **Compressor detector:** wybór Peak/RMS, domyślnie RMS.
+29. **Per-band workflow:** rekomendacja 3 pasma (low/mid/high), np.
+    120 Hz / 3 kHz; DAW decyduje.
 
-### Pozostałe do potwierdzenia
+### Status decyzji
 
-1. **Limiter:** czy akceptujesz wbudowany limiter z opcjami
-   `lookahead 0/1/2 ms` i `true peak on/off`, domyślnie 0 ms + sample
-   peak? Jeśli używasz FabFilter Pro-L, możesz go bypassować.
-2. **Compressor detector default:** RMS czy Peak? Rekomendacja: RMS
-   (bardziej muzyczny); Peak do kontroli transjentów.
-3. **Per-band workflow w DAW:** ile pasm polecam? **3 pasma**
-   (low/mid/high) to sweet spot dla większości materiału; 2 pasma do
-   sub/tops, 4 do masteringu/sound designu. Rekomendacja: 3, np.
-   120 Hz / 3 kHz.
+Wszystkie decyzje potrzebne do v0.1.0 są potwierdzone. Backlog v0.2+
+znajduje się poniżej.
 
 ### v0.2+ backlog
 
@@ -605,6 +603,40 @@ i opcjonalnym masteringu 20/40 ms. Per-band realizuje DAW przez wiele
 instancji. UI to hardware DSP z małymi LCD, motywami DBX/VOX/HYBRID
 i pionowymi faderami.
 
-Najważniejsze do potwierdzenia: **#0 vs IIR**, **per-band przez DAW**,
-**10 ms jako twardy limit czy default**, **domyślne 256 vs 10 ms**
-i **limiter vs FabFilter**.
+Wszystkie decyzje potrzebne do v0.1.0 są potwierdzone. Implementacja
+DSP jest w toku; szczegóły poniżej.
+
+---
+
+## 13. Status implementacji (po pierwszym etapie)
+
+Zrobione:
+
+- [x] repo, DPF submodule, CMake, `install.sh`, `install-all.sh`, CI
+- [x] `Params.hpp`, `Engine.hpp`, plugin DPF (VST3/LV2/CLAP/JACK)
+- [x] IIR mode: graphic EQ, PEQ, HP/LP, delay, compressor, limiter
+- [x] LINEAR mode: linear-phase FIR EQ/PEQ, łączony FIR gdy sąsiadują,
+      latency z `linear_latency_ms`
+- [x] per-channel delay align, sidechain input bus, Delta monitor
+- [x] meters, chain reorder, bypass
+- [x] testy DSP (flat, FIR latency, EQ gain, comp, limiter, delay align,
+      reorder, delta, sidechain, FIR symmetry)
+- [x] build VST3/LV2/CLAP/JACK na Linux
+
+Następne:
+
+- [ ] hardware DSP UI (1280×900, małe LCD, motywy DBX/VOX/HYBRID)
+- [ ] presety fabryczne, UI scale, offline renderer
+- [ ] crossfade współczynników FIR (teraz swap na granicy bloku)
+- [ ] dokładniejszy true-peak (obecnie 4× interpolacja liniowa)
+- [ ] benchmark CPU i ewentualny partitioned FFT
+- [ ] CI Linux/Windows/macOS + testy na żywym repo
+
+Znane ograniczenia prototypu:
+
+- brak UI (plugin ładuje się jako DSP-only),
+- zmiana współczynników FIR nie ma jeszcze crossfade (może klikać przy
+  kręceniu w LINEAR),
+- `true peak` to przybliżenie, nie pełny oversampling z filtrem,
+- sidechain jest wyrównywany do pełnego FIR latency (dobre dla
+  domyślnej kolejności comp po EQ/PEQ).
