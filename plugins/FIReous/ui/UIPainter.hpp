@@ -579,20 +579,20 @@ inline void buildCompModule(Layout& L, const ModulePanel& p, Color accent, const
 {
     const float x = p.x, y = p.y, w = p.w, h = p.h;
     addLcd(L, x + 18, y + 42, w - 100, 52, kLcdComp, th.lcdText, th.lcdBg);
-    addMeter(L, x + w - 54, y + 104, 16, h - 154, kMeterGrComp, th.accentComp, true, "GR");
+    addMeter(L, x + w - 38, y + 104, 16, h - 154, kMeterGrComp, th.accentComp, true, "GR");
 
     addKnob(L, kParamCompThreshold, x + 44, y + 174, 20, "THRESH", accent);
     addKnob(L, kParamCompRatio,     x + 114, y + 174, 20, "RATIO", accent);
     addKnob(L, kParamCompAttack,    x + 184, y + 174, 20, "ATTACK", accent);
     addKnob(L, kParamCompRelease,   x + 254, y + 174, 20, "RELEASE", accent);
     addKnob(L, kParamCompMakeup,    x + 324, y + 174, 20, "MAKEUP", accent);
-    addKnob(L, kParamCompLink,      x + 324, y + 268, 14, "LINK", accent);
+    addKnob(L, kParamCompLink,      x + 330, y + 268, 13, "LINK", accent);
 
-    addSelector(L, kParamCompDetector, x + 18, y + 258, 92, 22,
+    addSelector(L, kParamCompDetector, x + 18, y + 258, 90, 22,
                 { {0.0f, "RMS"}, {1.0f, "PEAK"} }, accent, nullptr);
-    L.buttons.push_back(makeButton(x + 118, y + 258, 88, 22, "AUTO MK", accent,
+    L.buttons.push_back(makeButton(x + 116, y + 258, 86, 22, "AUTO MK", accent,
                                    kParamCompAutoMakeup, 0.0f, kActionNone, true));
-    addSelector(L, kParamCompKey, x + 214, y + 258, 98, 22,
+    addSelector(L, kParamCompKey, x + 210, y + 258, 86, 22,
                 { {0.0f, "INT"}, {1.0f, "EXT"} }, accent, nullptr);
     (void)h;
 }
@@ -601,7 +601,7 @@ inline void buildLimModule(Layout& L, const ModulePanel& p, Color accent, const 
 {
     const float x = p.x, y = p.y, w = p.w, h = p.h;
     addLcd(L, x + 18, y + 42, w - 100, 52, kLcdLim, th.lcdText, th.lcdBg);
-    addMeter(L, x + w - 54, y + 104, 16, h - 154, kMeterGrLim, th.accentLim, true, "GR");
+    addMeter(L, x + w - 38, y + 104, 16, h - 154, kMeterGrLim, th.accentLim, true, "GR");
 
     addKnob(L, kParamLimCeiling, x + 100, y + 174, 26, "CEILING", accent);
     addKnob(L, kParamLimRelease, x + 240, y + 174, 26, "RELEASE", accent);
@@ -647,7 +647,7 @@ inline Layout buildLayout(float width, float height, const float* values,
     L.buttons.push_back(makeButton(140, 86, 70, 24, "LINEAR", th.accentGlobal, kParamPhaseMode, 1.0f));
     addSelector(L, kParamLinearLatency, 244, 86, 170, 24,
                 { {0.0f, "2.7"}, {1.0f, "5"}, {2.0f, "10"}, {3.0f, "20"}, {4.0f, "40"} },
-                th.accentGlobal, "LATENCY ms");
+                th.accentGlobal, nullptr);
     L.buttons.push_back(makeButton(458, 86, 54, 24, "DBX", th.accentGlobal, kParamCount, 0.0f, kActionThemeDbx));
     L.buttons.push_back(makeButton(518, 86, 54, 24, "VOX", th.accentGlobal, kParamCount, 0.0f, kActionThemeVox));
     L.buttons.push_back(makeButton(578, 86, 54, 24, "HYB", th.accentGlobal, kParamCount, 0.0f, kActionThemeHybrid));
@@ -844,6 +844,7 @@ inline void paintGlobalStrip(cairo_t* cr, const Layout& L, const PaintState& s, 
     setFont(cr, 8, true, true);
     setColor(cr, th.dim);
     drawText(cr, "PHASE", 34, 103);
+    drawText(cr, "LAT", 216, 103);
     drawText(cr, "THEME", 430, 103);
     (void)s;
 }
@@ -1165,7 +1166,12 @@ inline void paintMeter(cairo_t* cr, const Meter& m, float value, const Theme& th
     setFont(cr, 7, true, true);
     setColor(cr, th.dim);
     if (m.label)
-        drawText(cr, m.label, m.x - 18.0, m.y + (m.vertical ? 10.0 : m.h));
+    {
+        if (m.vertical)
+            centeredText(cr, m.label, m.x + m.w * 0.5, m.y - 4.0);
+        else
+            drawText(cr, m.label, m.x - 18.0, m.y + m.h);
+    }
 
     const int segments = m.vertical ? 12 : 20;
     if (m.vertical)

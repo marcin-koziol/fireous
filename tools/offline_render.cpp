@@ -10,11 +10,13 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cmath>
+#include <cstring>
 
 int main(int argc, char** argv)
 {
     const char* outPath = argc > 1 ? argv[1] : "/tmp/fireous-ui.png";
     const int theme = argc > 2 ? std::atoi(argv[2]) : 2;
+    const bool linear = argc > 3 && std::strcmp(argv[3], "linear") == 0;
 
     float values[fireous::kParamCount];
     for (uint32_t i = 0; i < fireous::kParamCount; ++i)
@@ -47,6 +49,12 @@ int main(int argc, char** argv)
     values[fireous::kParamMeterOutPeakL] = 0.66f;
     values[fireous::kParamMeterOutPeakR] = 0.61f;
     values[fireous::kParamMeterLatency] = 5.0f;
+    if (linear)
+    {
+        values[fireous::kParamPhaseMode] = 1.0f;
+        values[fireous::kParamLinearLatency] = 2.0f; // 10 ms
+        values[fireous::kParamMeterLatency] = 480.0f;
+    }
 
     fireous::ui::Layout layout = fireous::ui::buildLayout(1280.0f, 900.0f, values, 1, theme);
 
