@@ -1,6 +1,6 @@
 # FIReous
 
-> **v0.1.0.** DSP and the custom hardware-style UI are in place. Expect
+> **v0.1.1.** DSP and the custom hardware-style UI are in place. Expect
 > parameter/API changes before a stable release.
 
 FIReous is a stereo insert processor with two EQ engines:
@@ -127,6 +127,33 @@ cmake -S tests -B build-tests -DCMAKE_BUILD_TYPE=Release
 cmake --build build-tests -j"$(nproc)"
 ctest --test-dir build-tests --output-on-failure
 ```
+
+### Raspberry Pi (Raspberry Pi OS / Debian)
+
+CI builds an ARM64 target (`linux-arm64`) alongside the x86_64 one; tagged
+releases include a `...-linux-arm64.tar.xz` archive. The CI binaries are
+cross-compiled on Ubuntu 22.04 (glibc 2.35), so they run on 64-bit Raspberry Pi
+OS Bookworm or newer. For older releases, or 32-bit/ARMv6 boards, build
+natively on the Pi.
+
+Native build on the Pi:
+
+```sh
+sudo apt update
+sudo apt install -y build-essential cmake pkg-config \
+    libcairo2-dev libx11-dev libxext-dev libxrandr-dev libxcursor-dev
+git submodule update --init --recursive
+./install.sh --all
+```
+
+Only Cairo and the X11 headers are needed for the UI; the JACK/standalone
+target loads `libjack` at runtime, so `libjack*-dev` is not required. On slower
+boards prefer the default IIR mode - the 961-tap linear-phase FIR is
+CPU-heavy at high sample rates.
+
+To also publish 32-bit Raspberry Pi OS builds, add `linux-armhf` to the
+`target` matrix in `.github/workflows/build.yml` (covers ARMv7 boards; Pi 1 and
+Zero are ARMv6 and need a native build).
 
 ## Design notes
 

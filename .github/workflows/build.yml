@@ -1,7 +1,7 @@
 name: build
 
-# Builds FIReous VST3/LV2/CLAP/JACK for Linux, Windows and macOS, and runs
-# the standalone DSP tests on Linux.
+# Builds FIReous VST3/LV2/CLAP/JACK for Linux (x86_64 and Raspberry Pi arm64),
+# Windows and macOS, and runs the standalone DSP tests on Linux.
 
 on:
   push:
@@ -19,6 +19,12 @@ env:
 jobs:
   linux:
     runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        # linux-arm64 covers 64-bit Raspberry Pi OS (Pi 3/4/5, Zero 2 W).
+        # Add linux-armhf for 32-bit Raspberry Pi OS (Pi 2/3/4, not Pi 1/Zero).
+        target: [linux-x86_64, linux-arm64]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -26,7 +32,7 @@ jobs:
 
       - uses: distrho/dpf-cmake-action@v1
         with:
-          target: linux-x86_64
+          target: ${{ matrix.target }}
           dpf_path: dpf
           pawpaw: true
 
