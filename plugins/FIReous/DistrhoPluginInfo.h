@@ -9,8 +9,7 @@
 #define DISTRHO_PLUGIN_BRAND_ID  FirO
 #define DISTRHO_PLUGIN_UNIQUE_ID FirO
 
-// UI is added in a later stage; the DSP engine is built and tested first.
-#define DISTRHO_PLUGIN_HAS_UI           0
+#define DISTRHO_PLUGIN_HAS_UI           1
 #define DISTRHO_PLUGIN_IS_RT_SAFE       1
 #define DISTRHO_PLUGIN_IS_SYNTH         0
 #define DISTRHO_PLUGIN_NUM_INPUTS       4
@@ -20,5 +19,9 @@
 #define DISTRHO_PLUGIN_WANT_PROGRAMS    0
 #define DISTRHO_PLUGIN_WANT_TIMEPOS     1
 #define DISTRHO_PLUGIN_WANT_LATENCY     1
+
+#define DISTRHO_UI_USE_CAIRO             1
+#define DISTRHO_UI_DEFAULT_WIDTH         1280
+#define DISTRHO_UI_DEFAULT_HEIGHT        900
 
 #endif // DISTRHO_PLUGIN_INFO_H_INCLUDED

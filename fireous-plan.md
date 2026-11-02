@@ -622,19 +622,20 @@ Zrobione:
 - [x] testy DSP (flat, FIR latency, EQ gain, comp, limiter, delay align,
       reorder, delta, sidechain, FIR symmetry)
 - [x] build VST3/LV2/CLAP/JACK na Linux
+- [x] hardware DSP UI: 1280×900, pięć modułów, małe LCD, pionowe fadery,
+      LED meters, reorder, motywy DBX/VOX/HYBRID, UI scale, presety
+- [x] screenshoty live: `docs/screenshot.png`, `docs/ui-live-*.png`
 
 Następne:
 
-- [ ] hardware DSP UI (1280×900, małe LCD, motywy DBX/VOX/HYBRID)
-- [ ] presety fabryczne, UI scale, offline renderer
 - [ ] crossfade współczynników FIR (teraz swap na granicy bloku)
 - [ ] dokładniejszy true-peak (obecnie 4× interpolacja liniowa)
 - [ ] benchmark CPU i ewentualny partitioned FFT
 - [ ] CI Linux/Windows/macOS + testy na żywym repo
+- [ ] ewentualne dopracowanie layoutu modułów w szerokim slocie
 
 Znane ograniczenia prototypu:
 
-- brak UI (plugin ładuje się jako DSP-only),
 - zmiana współczynników FIR nie ma jeszcze crossfade (może klikać przy
   kręceniu w LINEAR),
 - `true peak` to przybliżenie, nie pełny oversampling z filtrem,
